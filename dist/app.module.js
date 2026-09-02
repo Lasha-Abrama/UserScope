@@ -5,13 +5,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     Module({
-        imports: [],
+        imports: [
+            ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            MongooseModule.forRootAsync({
+                imports: [ConfigModule],
+                inject: [ConfigService],
+                useFactory: (configService) => ({
+                    uri: configService.getOrThrow('MONGODB_URI'),
+                }),
+            }),
+        ],
         controllers: [AppController],
         providers: [AppService],
     })

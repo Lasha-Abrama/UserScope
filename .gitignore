@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Compiled output
+dist/
+*.tsbuildinfo
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
