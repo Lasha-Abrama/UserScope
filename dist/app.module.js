@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { UsersModule } from './users/users.module.js';
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -21,9 +22,10 @@ AppModule = __decorate([
                 imports: [ConfigModule],
                 inject: [ConfigService],
                 useFactory: (configService) => ({
-                    uri: configService.getOrThrow('MONGODB_URI'),
+                    uri: configService.getOrThrow('MONGODB_URL'),
                 }),
             }),
+            UsersModule,
         ],
         controllers: [AppController],
         providers: [AppService],
