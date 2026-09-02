@@ -14,20 +14,20 @@ export class User {
   @Prop({ required: true, lowercase: true, trim: true, unique: true })
   email: string;
 
-  @Prop({ required: true, min: 0, max: 120 })
+  @Prop({ required: true, min: 18, max: 100 })
   age: number;
 
   @Prop({ required: true, enum: ['m', 'f'] })
   gender: string;
 
-  @Prop({ required: true, trim: true })
-  phoneNumber: string;
+  @Prop({ trim: true })
+  phoneNumber?: string;
 
-  @Prop({ required: true, trim: true })
-  city: string;
+  @Prop({ trim: true })
+  city?: string;
 
-  @Prop({ required: true, trim: true })
-  country: string;
+  @Prop({ trim: true })
+  country?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
