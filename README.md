@@ -10,6 +10,19 @@ _Add dashboard and users-page screenshots here before publishing the portfolio p
 
 `Next.js (Vercel)` → `NestJS (Render/Railway)` → `Mongoose` → `MongoDB Atlas`
 
+## Midterm Requirements
+
+| Requirement | Implementation |
+| --- | --- |
+| Users CRUD | `src/users/users.controller.ts` and `users.service.ts` |
+| Exactly 150,000 Faker users | `src/seed.ts`, `npm run seed`, batched `insertMany` |
+| Request execution timing | `src/common/middleware/request-logger.middleware.ts` |
+| Read caching and mutation invalidation | `src/users/users.service.ts` with Nest cache-manager |
+| Total user count | `GET /total-users` uses `countDocuments()` |
+| Age index | `src/users/schemas/user.schema.ts` defines `{ age: 1 }` |
+| Exact age, range, gender, and regex name filters | `FindUsersQueryDto` and `UsersService.buildFilter()` |
+| Safe pagination | `find().skip().limit()` with defaults and limits in `FindUsersQueryDto` |
+
 ## Technologies
 
 - NestJS and TypeScript
@@ -140,19 +153,19 @@ Production variables:
 PORT=3000
 MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/userscope
 MONGODB_DATABASE=userscope
-FRONTEND_URL=https://userscope.vercel.app
+FRONTEND_URL=https://gita-backend-eight.vercel.app
 
 # Frontend
-NEXT_PUBLIC_API_URL=https://userscope-api.example.com
+NEXT_PUBLIC_API_URL=https://gita-backend-11s2.onrender.com
 ```
 
 The named `userscope` database is now selected explicitly. Existing records created before this setting was added may remain in Atlas's `test` database; migrate or rerun the explicit seed command intentionally if those records are needed in `userscope`. No automatic destructive migration is performed.
 
 Production URLs (replace placeholders after deployment):
 
-- Frontend: `https://userscope.vercel.app`
-- API: `https://userscope-api.example.com`
-- API docs: `https://userscope-api.example.com/api/docs`
+- Frontend: `https://gita-backend-eight.vercel.app/`
+- API: `https://gita-backend-11s2.onrender.com`
+- API docs: `https://gita-backend-11s2.onrender.com/api/docs`
 
 The frontend must be redeployed whenever `NEXT_PUBLIC_API_URL` changes because public Next.js variables are bundled at build time.
 
