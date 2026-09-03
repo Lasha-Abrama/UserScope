@@ -1,6 +1,14 @@
-# UserScope API
+# UserScope
 
-UserScope is a NestJS and MongoDB REST API for managing and exploring a large user dataset. It includes validated CRUD operations, filtering, pagination, sorting, request timing, in-memory read caching, and a batch seeder for 150,000 users.
+UserScope is a full-stack user analytics dashboard built around a NestJS API and a responsive Next.js frontend. It demonstrates production-minded CRUD, server-side search, pagination, caching, indexing, and a realistic 150,000-user dataset.
+
+## Screenshots
+
+_Add dashboard and users-page screenshots here before publishing the portfolio project._
+
+## Architecture
+
+`Next.js (Vercel)` → `NestJS (Render/Railway)` → `Mongoose` → `MongoDB Atlas`
 
 ## Technologies
 
@@ -10,6 +18,7 @@ UserScope is a NestJS and MongoDB REST API for managing and exploring a large us
 - `@nestjs/cache-manager`
 - Faker
 - Swagger/OpenAPI
+- Next.js App Router, Tailwind CSS, and Lucide icons
 
 ## Setup
 
@@ -21,20 +30,33 @@ cp .env.example .env
 Configure `.env`:
 
 ```dotenv
-MONGODB_URL=mongodb://localhost:27017/userscope
-FRONTEND_URL=http://localhost:3000
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/userscope
+MONGODB_DATABASE=userscope
+FRONTEND_URL=http://localhost:3001
 PORT=3000
 ```
 
 Use either a running local MongoDB instance or replace `MONGODB_URL` with a MongoDB Atlas connection string. Never commit `.env`.
 
+For the dashboard, configure the frontend separately:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+```
+
+Set `NEXT_PUBLIC_API_URL=http://localhost:3000` in `frontend/.env.local`.
+
 ## Run
 
 ```bash
 npm run start:dev
+# in a second terminal
+cd frontend && npm run dev
 ```
 
-The API defaults to `http://localhost:3000`. Swagger documentation is available at `http://localhost:3000/api/docs`.
+The API defaults to `http://localhost:3000`; the frontend runs at `http://localhost:3001`. Swagger documentation is available at `http://localhost:3000/api/docs`, and the health check is at `http://localhost:3000/health`.
 
 ## Seed data
 
@@ -60,6 +82,8 @@ curl http://localhost:3000/total-users
 | `PATCH` | `/users/:id` | Update one user |
 | `DELETE` | `/users/:id` | Delete one user |
 | `GET` | `/total-users` | Count all users |
+| `GET` | `/stats` | Dashboard statistics |
+| `GET` | `/health` | Lightweight service health check |
 
 ## Filtering, pagination, and sorting
 
@@ -82,6 +106,10 @@ GET /users?sortBy=age&order=desc
 - Successful create, update, and delete operations clear user read caches.
 - Every HTTP response logs its method, URL, status code, and duration.
 
+## Frontend
+
+The dashboard provides total/male/female/average-age statistics, a paginated users table, debounced name search, age and gender filters, safe sorting, create/edit forms, delete confirmation, user details, loading/error/empty states, and responsive layouts. All list filtering and pagination are performed by the API rather than downloading the full dataset.
+
 ## Quality checks
 
 ```bash
@@ -90,4 +118,50 @@ npm run build
 npm run lint
 npm test
 npm run test:e2e
+```
+
+## Production deployment
+
+The backend can be deployed from this directory to Render or Railway:
+
+```text
+Build: npm install && npm run build
+Start: npm run start:prod
+```
+
+The frontend lives in `frontend/` and can be deployed independently to Vercel with `frontend` as the Root Directory and `npm run build` as the build command. Set `NEXT_PUBLIC_API_URL` to the deployed backend URL and redeploy after changing it because `NEXT_PUBLIC_*` values are bundled at build time.
+
+Configure MongoDB Atlas with a valid database user, a rotated password, and network access for the deployed backend. `0.0.0.0/0` is convenient but exposes the cluster to all IPs; prefer the hosting provider's narrower outbound-IP range when available.
+
+Production variables:
+
+```dotenv
+# Backend
+PORT=3000
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/userscope
+MONGODB_DATABASE=userscope
+FRONTEND_URL=https://userscope.vercel.app
+
+# Frontend
+NEXT_PUBLIC_API_URL=https://userscope-api.example.com
+```
+
+The named `userscope` database is now selected explicitly. Existing records created before this setting was added may remain in Atlas's `test` database; migrate or rerun the explicit seed command intentionally if those records are needed in `userscope`. No automatic destructive migration is performed.
+
+Production URLs (replace placeholders after deployment):
+
+- Frontend: `https://userscope.vercel.app`
+- API: `https://userscope-api.example.com`
+- API docs: `https://userscope-api.example.com/api/docs`
+
+The frontend must be redeployed whenever `NEXT_PUBLIC_API_URL` changes because public Next.js variables are bundled at build time.
+
+## Project structure
+
+```text
+midterm_3/
+├── src/                 # NestJS API, users feature, seed script
+├── frontend/            # Next.js dashboard
+├── .env.example         # safe backend template
+└── README.md
 ```

@@ -9,7 +9,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: configService.get<string>('FRONTEND_URL', 'http://localhost:3000'),
+    origin: configService.get<string>('FRONTEND_URL', 'http://localhost:3001'),
   });
 
   app.useGlobalPipes(
@@ -28,6 +28,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(configService.get<string>('PORT', '3000'));
+  await app.listen(configService.get<string>('PORT', '3000'), '0.0.0.0');
 }
 await bootstrap();

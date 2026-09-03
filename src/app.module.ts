@@ -16,6 +16,7 @@ import { UsersModule } from './users/users.module.js';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.getOrThrow<string>('MONGODB_URL'),
+        dbName: configService.get<string>('MONGODB_DATABASE', 'userscope'),
       }),
     }),
     UsersModule,
